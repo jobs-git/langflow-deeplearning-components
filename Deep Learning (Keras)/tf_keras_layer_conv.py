@@ -26,6 +26,7 @@ from langflow.template import Input, Output
 from tensorflow.keras.layers import Conv2D
 from langflow.schema.message import Message
 from langflow.io import IntInput, DropdownInput, StrInput
+from tensorflow.keras.models import Sequential
 import re
 
 class KerasConv (Component):

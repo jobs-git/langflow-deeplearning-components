@@ -26,6 +26,7 @@ from langflow.template import Input, Output
 import tensorflow as tf
 from langflow.schema.message import Message
 from langflow.io import IntInput, DropdownInput, BoolInput
+from tensorflow.keras.models import Sequential
 import warnings
 
 class KerasRecurrent(Component):
