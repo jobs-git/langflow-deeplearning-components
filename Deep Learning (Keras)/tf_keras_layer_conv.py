@@ -63,7 +63,7 @@ class KerasConv (Component):
             name="kernel_size",
             display_name="Kernel Size",
             info="Size of the kernel as a comma-separated list, e.g., 3, 3.",
-            value="1, 1",
+            value="1",
         ),
         DropdownInput(
             name="input_activation",
