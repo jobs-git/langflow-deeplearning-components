@@ -103,6 +103,8 @@ class KerasCompile (Component):
         else:
             raise ValueError("Input model should be a Data object containing the model.")
 
+        # TODO: raise warning/error when there is no input layer
+
         if self.input_metrics != "None":
             metrics = self.input_metrics
 
