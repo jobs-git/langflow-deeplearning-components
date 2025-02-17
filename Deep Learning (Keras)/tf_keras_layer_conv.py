@@ -24,7 +24,7 @@ Author: James Guana
 from langflow.custom import Component
 from langflow.template import Input, Output
 from tensorflow.keras.layers import Conv2D
-from langflow.schema.message import Message
+from langflow.schema import Data
 from langflow.io import IntInput, DropdownInput, StrInput
 from tensorflow.keras.models import Sequential
 import re
@@ -40,7 +40,7 @@ class KerasConv (Component):
         Input(
             name="input_model",
             display_name="Model",
-            field_type="Message",
+            field_type="Data",
             required=True,
             info="Input model.",
             input_types=["Sequential"],
@@ -83,11 +83,11 @@ class KerasConv (Component):
         pattern = re.compile(r'^(\d+\s*,\s*)*\d+$')
         return bool(pattern.match(input_shape.strip()))
 
-    def add_layer(self) -> Message:
+    def add_layer(self) -> Data:
         model = None
         activation = None
 
-        if isinstance(self.input_model, Message):
+        if isinstance(self.input_model, Data):
             model = self.input_model.model
         else:
             raise ValueError("Cannot read input model")
@@ -137,4 +137,4 @@ class KerasConv (Component):
                 )
             )
 
-        return Message(model=model)
+        return Data(model=model)

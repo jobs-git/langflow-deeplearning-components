@@ -24,7 +24,7 @@ Author: James Guana
 from langflow.custom import Component
 from langflow.template import Input, Output
 from tensorflow.keras.layers import InputLayer
-from langflow.schema.message import Message
+from langflow.schema import Data
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from langflow.io import (
@@ -48,7 +48,7 @@ class KerasDense (Component):
         Input(
             name="input_model",
             display_name="Model",
-            field_type="Message",
+            field_type="Data",
             info="Input model.",
             required=True,
             input_types=["Sequential"]
@@ -73,9 +73,9 @@ class KerasDense (Component):
         Output (display_name = "Output", name = "output", method = "add_layer"),
     ]
 
-    def add_layer (self) -> Message:
+    def add_layer (self) -> Data:
 
-        if isinstance (self.input_model, Message):
+        if isinstance (self.input_model, Data):
             model = self.input_model.model
         else:
             raise ValueError("Sequential model not initialized.")
@@ -92,4 +92,4 @@ class KerasDense (Component):
             )
         )
 
-        return Message (model = model)
+        return Data (model = model)

@@ -23,7 +23,7 @@ Author: James Guana
 
 from langflow.custom import Component
 from langflow.template import Input, Output
-from langflow.schema.message import Message
+from langflow.schema import Data
 import io
 import contextlib
 import tensorflow as tf
@@ -41,7 +41,7 @@ class KerasSummary(Component):
         Input(
             name="input_model",
             display_name="Model",
-            field_type="Message",
+            field_type="Data",
             info="Input model.",
             input_types=["Sequential"]
         ),
@@ -55,7 +55,7 @@ class KerasSummary(Component):
         model_summary = ""
         model = None
 
-        if isinstance(self.input_model, Message):
+        if isinstance(self.input_model, Data):
             model = self.input_model.model
 
             with io.StringIO() as buf, contextlib.redirect_stdout(buf):

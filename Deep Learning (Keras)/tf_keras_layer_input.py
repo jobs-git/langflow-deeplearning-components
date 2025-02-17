@@ -24,7 +24,7 @@ Author: James Guana
 from langflow.custom import Component
 from langflow.template import Input, Output
 from tensorflow.keras.layers import InputLayer
-from langflow.schema.message import Message
+from langflow.schema import Data
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from langflow.io import (
@@ -48,7 +48,7 @@ class KerasInput (Component):
         Input(
             name="input_model",
             display_name="Model",
-            field_type="Message",
+            field_type="Data",
             info="Input model.",
             required=True,
             input_types=["Sequential"]
@@ -71,10 +71,10 @@ class KerasInput (Component):
         pattern = re.compile(r'^(\d+\s*,\s*)*\d+$')
         return bool(pattern.match(input_shape.strip()))
 
-    def add_input_layer(self) -> Message:
+    def add_input_layer(self) -> Data:
 
 
-        if isinstance(self.input_model, Message):
+        if isinstance(self.input_model, Data):
             model = self.input_model.model
         else:
             raise ValueError("Sequential model not initialized.")
@@ -92,4 +92,4 @@ class KerasInput (Component):
             )
         )
 
-        return Message(model=model)
+        return Data(model=model)

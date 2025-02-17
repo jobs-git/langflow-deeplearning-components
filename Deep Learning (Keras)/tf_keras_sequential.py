@@ -24,7 +24,7 @@ Author: James Guana
 from langflow.custom import Component
 from langflow.template import Input, Output
 from tensorflow.keras.layers import InputLayer
-from langflow.schema.message import Message
+from langflow.schema import Data
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from langflow.io import (
@@ -51,8 +51,8 @@ class KerasSequential (Component):
         Output(display_name="Output", name="output", method="create_sequential"),
     ]
 
-    def create_sequential (self) -> Message:
+    def create_sequential (self) -> Data:
 
         model = Sequential()
 
-        return Message(model=model)
+        return Data(model=model)

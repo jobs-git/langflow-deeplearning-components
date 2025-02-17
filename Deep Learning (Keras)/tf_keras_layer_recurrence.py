@@ -24,7 +24,7 @@ Author: James Guana
 from langflow.custom import Component
 from langflow.template import Input, Output
 import tensorflow as tf
-from langflow.schema.message import Message
+from langflow.schema import Data
 from langflow.io import IntInput, DropdownInput, BoolInput
 from tensorflow.keras.models import Sequential
 import warnings
@@ -40,7 +40,7 @@ class KerasRecurrent(Component):
         Input(
             name="input_model",
             display_name="Model",
-            field_type="Message",
+            field_type="Data",
             required=True,
             info="Input model.",
             input_types=["Sequential"],
@@ -86,10 +86,10 @@ class KerasRecurrent(Component):
         Output(display_name="Output", name="output", method="add_layer"),
     ]
 
-    def add_layer(self) -> Message:
+    def add_layer(self) -> Data:
         model = None
 
-        if isinstance(self.input_model, Message):
+        if isinstance(self.input_model, Data):
             model = self.input_model.model
         else:
             raise ValueError("Cannot read input model")
@@ -118,4 +118,4 @@ class KerasRecurrent(Component):
                 )
             )
 
-        return Message(model=model)
+        return Data(model=model)

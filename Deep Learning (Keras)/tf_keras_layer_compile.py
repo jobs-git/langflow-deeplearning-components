@@ -24,7 +24,7 @@ Author: James Guana
 from langflow.custom import Component
 from langflow.template import Input, Output
 from tensorflow.keras.models import Sequential
-from langflow.schema.message import Message
+from langflow.schema import Data
 from langflow.io import StrInput, DropdownInput
 from tensorflow.keras.models import Sequential
 
@@ -39,7 +39,7 @@ class KerasCompile (Component):
         Input(
             name="input_model",
             display_name="Model",
-            field_type="Message",
+            field_type="Data",
             info="Input model.",
             required=True,
             input_types=["Sequential"],
@@ -92,16 +92,16 @@ class KerasCompile (Component):
         Output(display_name="Compiled Model", name="output_model", method="compile_model"),
     ]
 
-    def compile_model (self) -> Message:
+    def compile_model (self) -> Data:
 
         model = None
         metrics = None
         loss = None
 
-        if isinstance(self.input_model, Message):
+        if isinstance(self.input_model, Data):
             model = self.input_model.model
         else:
-            raise ValueError("Input model should be a Message object containing the model.")
+            raise ValueError("Input model should be a Data object containing the model.")
 
         if self.input_metrics != "None":
             metrics = self.input_metrics
@@ -118,4 +118,4 @@ class KerasCompile (Component):
             metrics=metrics
         )
         
-        return Message(model=model)
+        return Data(model=model)
