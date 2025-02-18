@@ -28,7 +28,7 @@ from langflow.io import IntInput, DropdownInput, BoolInput
 import warnings
 
 class KerasRecurrent(Component):
-    display_name = "Keras Recurrent Layer"
+    display_name = "Keras Recurrent"
     description = "Recurrent layer with customizable units, activation, recurrent activation, and return sequences."
     documentation = "https://keras.io/api/layers/recurrent_layers/"
     icon = "layers"
@@ -80,7 +80,7 @@ class KerasRecurrent(Component):
         ),
         BoolInput(
             name="input_use_cudnn",
-            display_name="CUDNNLSTM",
+            display_name="CUDNN",
             info="Whether to enable or disable the use of CUDNN for LSTM.",
             value=False,
         ),
