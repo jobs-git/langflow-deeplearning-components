@@ -54,7 +54,7 @@ class KerasSequential (Component):
             name="input_backend",
             display_name="Backend",
             info="Backend framework function to use.",
-            options=["tensorflow", "torch", "jax", "numpy"],
+            options=["tensorflow", "torch", "jax"],
             value="tensorflow",
         ),
     ]
