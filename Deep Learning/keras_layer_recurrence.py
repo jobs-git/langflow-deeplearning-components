@@ -23,10 +23,8 @@ Author: James Guana
 
 from langflow.custom import Component
 from langflow.template import Input, Output
-import tensorflow as tf
 from langflow.schema import Data
 from langflow.io import IntInput, DropdownInput, BoolInput
-from tensorflow.keras.models import Sequential
 import warnings
 
 class KerasRecurrent(Component):
@@ -99,9 +97,11 @@ class KerasRecurrent(Component):
         recurrent_activation = self.recurrent_activation
         return_sequences = self.return_sequences
 
+        import keras
+
         if self.input_recurrent_type == "GRU":
             model.add(
-                tf.keras.layers.GRU(
+                keras.layers.GRU(
                     units=units,
                     activation=activation,
                     recurrent_activation=recurrent_activation,
@@ -110,7 +110,7 @@ class KerasRecurrent(Component):
             )
         elif self.input_recurrent_type == "LSTM":
             model.add(
-                tf.keras.layers.LSTM(
+                keras.layers.LSTM(
                     units=units,
                     activation=activation,
                     recurrent_activation=recurrent_activation,

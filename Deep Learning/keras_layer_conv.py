@@ -23,10 +23,8 @@ Author: James Guana
 
 from langflow.custom import Component
 from langflow.template import Input, Output
-from tensorflow.keras.layers import Conv2D
 from langflow.schema import Data
 from langflow.io import IntInput, DropdownInput, StrInput
-from tensorflow.keras.models import Sequential
 import re
 
 class KerasConv (Component):
@@ -112,9 +110,11 @@ class KerasConv (Component):
 
         filters = int(self.filters)
 
+        import keras
+
         if self.input_conv_type == "Conv1D":
             model.add(
-                tensorflow.keras.layers.Conv1D(
+                keras.layers.Conv1D(
                     filters=filters,
                     kernel_size=kernel_size[0],  # Use the first value
                     activation=activation
@@ -122,7 +122,7 @@ class KerasConv (Component):
             )
         elif self.input_conv_type == "Conv2D":
             model.add(
-                tensorflow.keras.layers.Conv2D(
+                keras.layers.Conv2D(
                     filters=filters,
                     kernel_size=kernel_size,  # Use the first two values
                     activation=activation
@@ -130,7 +130,7 @@ class KerasConv (Component):
             )
         elif self.input_conv_type == "Conv3D":
             model.add(
-                tensorflow.keras.layers.Conv3D(
+                keras.layers.Conv3D(
                     filters=filters,
                     kernel_size=kernel_size,  # Use the first three values
                     activation=activation

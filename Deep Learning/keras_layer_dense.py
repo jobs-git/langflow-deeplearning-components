@@ -24,18 +24,22 @@ Author: James Guana
 from langflow.custom import Component
 from langflow.template import Input, Output
 from langflow.schema import Data
-import io
-import contextlib
-import tensorflow as tf
+from langflow.io import (
+    BoolInput,
+    DropdownInput,
+    HandleInput,
+    IntInput,
+    SecretStrInput,
+    StrInput,
+)
+import re
 
-import gc
-
-class KerasSummary(Component):
-    display_name = "Keras Summary"
-    description = "Prints the summary of a Keras model."
-    documentation = "https://keras.io/api/models/model/"
-    icon = "summary"
-    name = "KerasSummary"
+class KerasDense (Component):
+    display_name = "Keras Dense"
+    description = "Adds a dense layer with the specified units to the Keras model."
+    documentation = "https://keras.io/api/layers/core_layers/dense/"
+    icon = "layers"
+    name = "KerasDense"
 
     inputs = [
         Input(
@@ -43,33 +47,48 @@ class KerasSummary(Component):
             display_name="Model",
             field_type="Data",
             info="Input model.",
+            required=True,
             input_types=["Sequential"]
+        ),
+        IntInput(
+            name="input_units",
+            display_name="Units",
+            info="Number of units in the Dense layer.",
+            value=1,
+            required=True,
+        ),
+        DropdownInput(
+            name="input_activation",
+            display_name="Activation",
+            info="Activation function to use.",
+            options=["None", "relu", "sigmoid", "tanh", "softmax"],
+            value="None",
         ),
     ]
 
     outputs = [
-        Output(display_name="Model Summary", name="summary", method="print_summary"),
+        Output (display_name = "Output", name = "output", method = "add_layer"),
     ]
 
-    def print_summary(self) -> str:
-        model_summary = ""
-        model = None
+    def add_layer (self) -> Data:
 
-        if isinstance(self.input_model, Data):
+        if isinstance (self.input_model, Data):
             model = self.input_model.model
+        else:
+            raise ValueError("Sequential model not initialized.")
 
-            with io.StringIO() as buf, contextlib.redirect_stdout(buf):
-                model.summary()
-                model_summary = buf.getvalue()
+        activation = None
 
-        self.reset_keras(model)
+        if self.input_activation != "None":
+            activation = self.input_activation
 
-        return model_summary
+        import keras
 
-    def reset_keras(self, model):
-        del model
-        gc.collect ()
-        a = tf.zeros([], tf.float32)
-        del a
-        gc.collect ()
-        tf.keras.backend.clear_session()
+        model.add (
+            keras.layers.Dense (
+                units = self.input_units, 
+                activation = activation
+            )
+        )
+
+        return Data (model = model)

@@ -23,10 +23,8 @@ Author: James Guana
 
 from langflow.custom import Component
 from langflow.template import Input, Output
-from tensorflow.keras.models import Sequential
 from langflow.schema import Data
 from langflow.io import StrInput, DropdownInput
-from tensorflow.keras.models import Sequential
 
 class KerasCompile (Component):
     display_name = "Keras Compile"
@@ -112,12 +110,11 @@ class KerasCompile (Component):
             loss = self.input_loss
 
         optimizer = self.optimizer  
-
-        # Compile the model
+        
         model.compile(
             optimizer=optimizer, 
             loss=loss, 
-            metrics=metrics
+            metrics=[metrics]
         )
         
         return Data(model=model)

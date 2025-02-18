@@ -23,10 +23,7 @@ Author: James Guana
 
 from langflow.custom import Component
 from langflow.template import Input, Output
-from tensorflow.keras.layers import InputLayer
 from langflow.schema import Data
-import tensorflow as tf
-from tensorflow.keras.models import Sequential
 from langflow.io import (
     BoolInput,
     DropdownInput,
@@ -37,12 +34,12 @@ from langflow.io import (
 )
 import re
 
-class KerasDense (Component):
-    display_name = "Keras Dense"
-    description = "Adds a dense layer with the specified units to the Keras model."
-    documentation = "https://keras.io/api/layers/core_layers/dense/"
+class KerasInput (Component):
+    display_name = "Keras Input"
+    description = "Adds an input layer with the specified shape to the Keras model."
+    documentation = "https://keras.io/api/layers/core_layers/input/"
     icon = "layers"
-    name = "KerasDense"
+    name = "KerasInput"
 
     inputs = [
         Input(
@@ -53,43 +50,45 @@ class KerasDense (Component):
             required=True,
             input_types=["Sequential"]
         ),
-        IntInput(
-            name="input_units",
-            display_name="Units",
-            info="Number of units in the Dense layer.",
-            value=1,
+        Input(
+            name="input_shape",
+            display_name="Data Shape",
+            info="Input shape as a comma-separated list, e.g., 28, 28, 1 or 1.",
             required=True,
-        ),
-        DropdownInput(
-            name="input_activation",
-            display_name="Activation",
-            info="Activation function to use.",
-            options=["None", "relu", "sigmoid", "tanh", "softmax"],
-            value="None",
+            value="1",
         ),
     ]
 
     outputs = [
-        Output (display_name = "Output", name = "output", method = "add_layer"),
+        Output(display_name="Output", name="output", method="add_input_layer"),
     ]
 
-    def add_layer (self) -> Data:
+    def validate_input_shape (self, input_shape: str) -> bool:
+ 
+        pattern = re.compile(r'^(\d+\s*,\s*)*\d+$')
+        return bool(pattern.match(input_shape.strip()))
 
-        if isinstance (self.input_model, Data):
+    def add_input_layer(self) -> Data:
+
+
+        if isinstance(self.input_model, Data):
             model = self.input_model.model
         else:
             raise ValueError("Sequential model not initialized.")
 
-        activation = None
+        input_shape_str = self.input_shape.replace(" ", "")
 
-        if self.input_activation != "None":
-            activation = self.input_activation
+        if not self.validate_input_shape(input_shape_str):
+            raise ValueError("Invalid input shape. Only numbers and commas are allowed.")
 
-        model.add (
-            tf.keras.layers.Dense (
-                units = self.input_units, 
-                activation = activation
+        input_shape = tuple(map(int, input_shape_str.split(',')))
+
+        import keras
+
+        model.add(
+            keras.Input(
+                shape=input_shape
             )
         )
 
-        return Data (model = model)
+        return Data(model=model)

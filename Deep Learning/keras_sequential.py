@@ -21,12 +21,14 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 Author: James Guana
 """
 
+# TODO: identify the cause of failure of PyTorch when using sigmoid + binary cross entropy
+
 from langflow.custom import Component
 from langflow.template import Input, Output
-from tensorflow.keras.layers import InputLayer
 from langflow.schema import Data
-import tensorflow as tf
-from tensorflow.keras.models import Sequential
+import os
+import sys
+
 from langflow.io import (
     BoolInput,
     DropdownInput,
@@ -36,7 +38,6 @@ from langflow.io import (
     StrInput,
 )
 
-import os
 os.environ["TF_GPU_ALLOCATOR"]="cuda_malloc_async"
 os.environ["TF_CPP_VMODULE"]="gpu_process_state=10,gpu_cudamallocasync_allocator=10"
 
@@ -47,12 +48,35 @@ class KerasSequential (Component):
     icon = "input"
     name = "KerasSequential"
 
+    inputs = [
+        DropdownInput(
+            name="input_backend",
+            display_name="Backend",
+            info="Backend framework function to use.",
+            options=["tensorflow", "torch", "jax", "numpy"],
+            value="tensorflow",
+        ),
+    ]
+
     outputs = [
         Output(display_name="Output", name="output", method="create_sequential"),
     ]
+    
+    # hack because keras cannot dynamically switch backends
+    def remove_keras_modules (self):
+        keras_modules = [module for module in sys.modules if module.startswith('keras') ]
+        for module in keras_modules:
+            sys.modules.pop(module, None)
+        sys.modules.pop ('tensorflow.python.trackable.data_structures', None)
+        print("Keras modules removed:", keras_modules)
 
     def create_sequential (self) -> Data:
+        
+        self.remove_keras_modules ()
+        os.environ["KERAS_BACKEND"] = self.input_backend
 
-        model = Sequential()
+        import keras
 
-        return Data(model=model)
+        model = keras.Sequential()
+
+        return Data (model=model)
