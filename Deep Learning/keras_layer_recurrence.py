@@ -78,6 +78,12 @@ class KerasRecurrent(Component):
             info="Whether to return the last output in the output sequence, or the full sequence.",
             value=False,
         ),
+        BoolInput(
+            name="input_use_cudnn",
+            display_name="CUDNNLSTM",
+            info="Whether to enable or disable the use of CUDNN for LSTM.",
+            value=False,
+        ),
     ]
 
     outputs = [
@@ -96,7 +102,8 @@ class KerasRecurrent(Component):
         activation = self.activation
         recurrent_activation = self.recurrent_activation
         return_sequences = self.return_sequences
-
+        use_cudnn=self.input_use_cudnn
+        
         import keras
 
         if self.input_recurrent_type == "GRU":
@@ -105,7 +112,8 @@ class KerasRecurrent(Component):
                     units=units,
                     activation=activation,
                     recurrent_activation=recurrent_activation,
-                    return_sequences=return_sequences
+                    return_sequences=return_sequences,
+                    use_cudnn=use_cudnn
                 )
             )
         elif self.input_recurrent_type == "LSTM":
@@ -114,7 +122,8 @@ class KerasRecurrent(Component):
                     units=units,
                     activation=activation,
                     recurrent_activation=recurrent_activation,
-                    return_sequences=return_sequences
+                    return_sequences=return_sequences,
+                    use_cudnn=use_cudnn
                 )
             )
 
