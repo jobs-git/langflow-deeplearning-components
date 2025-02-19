@@ -56,7 +56,7 @@ class KerasPredict(Component):
         Output(display_name="Predictions", name="predict", method="predict")
     ]
 
-    def predict (self) -> Data:
+    def predict (self) -> DataFrame:
         model = None
 
         if isinstance(self.input_model, Data):
@@ -73,4 +73,4 @@ class KerasPredict(Component):
         data_dict = {"y_pred": results.tolist()}
         data = DataFrame(data_dict)
         
-        return Data(results=data)
+        return data
